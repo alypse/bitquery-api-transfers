@@ -1,0 +1,20 @@
+{
+  "url": "https://graphql.bitquery.io",
+  "api_key": "",
+  "token": "",
+  "addresses": [
+    {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": ""
+    }
+  ],
+  "currencies": [
+    {
+      "1": "ETH",
+      "3": "USDC",
+      "4": "USDT"
+    }
+  ]
+}
