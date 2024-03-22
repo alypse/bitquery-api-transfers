@@ -1,4 +1,4 @@
-# Bitquery getTransactions
+# Bitquery Transfers
 Written in python, fetches transaction data from [bitquery.io api](https://graphql.bitquery.io) with user-defined target
 address and network selection (ETH or Layer 2).
 
@@ -15,8 +15,8 @@ Follow these steps to create an executable with packaged dependencies.
 2. Edit config_dummy.json to add API credentials, predefined address and filter currencies
 3. Rename config_dummy.json >> config.json
 4. pip install pyinstaller
-5. pyinstaller --onefile getTransactions.py
-6. run getTransactions.exe
+5. pyinstaller --onefile get_transactions.py
+6. run get_transactions.exe
 7. Select or input ETH address
 8. Select or input ETH/Tokens
 9. CSV file will be output to the script directory with the last four characters of the target address, and the script
@@ -27,7 +27,7 @@ Follow these steps to run the python script natively.
 1. Clone repository
 2. Edit config_dummy.json to add API credentials, predefined address and filter currencies
 3. Rename config_dummy.json >> config.json
-4. run getTransactions.py
+4. run get_transactions.py
 5. Select or input ETH address
 6. Select or input ETH/Tokens
 7. CSV file will be output to the script directory with the last four characters of the target address, and the script
