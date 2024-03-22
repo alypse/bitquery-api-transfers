@@ -136,7 +136,7 @@ data = fetch_data_with_pagination(config["url"], payload_select)
 print(f"It looks like your transactions are empty: {len(data)}")
 print(f"Aborting operation")
 
-if not data:
+if data:
     with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
       
         writer = csv.DictWriter(csvfile, fieldnames=field_names)
