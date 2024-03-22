@@ -103,15 +103,22 @@ def fetch_data_with_pagination(url, payload_func):
         response = requests.post(url, headers=headers, data=payload)
         try:
             response_data = response.json()
+            transfers_data = response_data.get('data', {}).get('ethereum', {}).get('transfers', [])
+
+            if not transfers_data:
+                print("It looks like you don't have any more transactions.")
+                print(f"Transaction returned: {transfers_data[:1]}")
+                break
+
+            all_data.extend(transfers_data)
+
         except json.decoder.JSONDecodeError as e:
             print("Error decoding JSON response:", e)
             print("Response content:", response.content)
             break
-        transfers_data = response_data.get('data', {}).get('ethereum', {}).get('transfers', [])
-        if not transfers_data:
-            break
-        all_data.extend(transfers_data)
+        
         offset += limit
+
     return all_data
 
 
@@ -125,20 +132,26 @@ field_names = ['timestamp', 'amount', 'currency_symbol', 'txhash', 'sender_addre
                'contract_address']
 
 # Write data to the CSV file
-with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
-    writer = csv.DictWriter(csvfile, fieldnames=field_names)
-    writer.writeheader()
-    data = fetch_data_with_pagination(config["url"], payload_select)
+data = fetch_data_with_pagination(config["url"], payload_select)
 
-    for transfer in data:
-        writer.writerow({
-            'timestamp': transfer['block']['timestamp']['iso8601'][:10],  # Write the first ten characters of timestamp
-            'amount': "{:.2f}".format(float(transfer['amount'])),  # Format amount rounded to two decimal places
-            'currency_symbol': transfer['currency']['symbol'],
-            'txhash': transfer['transaction']['hash'],
-            'sender_address': transfer['sender']['address'],
-            'receiver_address': transfer['receiver']['address'],
-            'contract_address': transfer['currency']['address'],
-        })
+if data:
+    with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
+      
+        writer = csv.DictWriter(csvfile, fieldnames=field_names)
+        writer.writeheader()
 
-print(f"CSV file '{csv_file_path}' has been created successfully.")
+        for transfer in data:
+            writer.writerow({
+                'timestamp': transfer['block']['timestamp']['iso8601'][:10],  # Write the first ten characters of timestamp
+                'amount': "{:.2f}".format(float(transfer['amount'])),  # Format amount rounded to two decimal places
+                'currency_symbol': transfer['currency']['symbol'],
+                'txhash': transfer['transaction']['hash'],
+                'sender_address': transfer['sender']['address'],
+                'receiver_address': transfer['receiver']['address'],
+                'contract_address': transfer['currency']['address'],
+            })
+        
+        print(f"CSV file '{csv_file_path}' has been created successfully.")
+else:
+    print(f"It looks like your transactions are empty: {len(data)}")
+    print(f"Aborting operation")
