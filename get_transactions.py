@@ -103,16 +103,21 @@ def fetch_data_with_pagination(url, payload_func):
         response = requests.post(url, headers=headers, data=payload)
         try:
             response_data = response.json()
+            transfers_data = response_data.get('data', {}).get('ethereum', {}).get('transfers', [])
+
+            if len(transfers_data) == 0:
+                print(f"It looks like your transfers are empty: {transfers_data[:1]}")
+                break
+
+            all_data.extend(transfers_data)
+
         except json.decoder.JSONDecodeError as e:
             print("Error decoding JSON response:", e)
             print("Response content:", response.content)
             break
-        transfers_data = response_data.get('data', {}).get('ethereum', {}).get('transfers', [])
-        if transfers_data['transfers'].length == 0:
-          print(f"It looks like your transfers are empty: {transfers_data['transfers']}")
-            break
-        all_data.extend(transfers_data)
+        
         offset += limit
+
     return all_data
 
 
@@ -130,6 +135,7 @@ with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
     writer = csv.DictWriter(csvfile, fieldnames=field_names)
     writer.writeheader()
     data = fetch_data_with_pagination(config["url"], payload_select)
+    print(f"It looks like your transfers are empty: {data[:1]}")
 
     for transfer in data:
         writer.writerow({
