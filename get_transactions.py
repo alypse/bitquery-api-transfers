@@ -108,7 +108,8 @@ def fetch_data_with_pagination(url, payload_func):
             print("Response content:", response.content)
             break
         transfers_data = response_data.get('data', {}).get('ethereum', {}).get('transfers', [])
-        if not transfers_data:
+        if transfers_data['transfers'].length == 0:
+          print(f"It looks like your transfers are empty: {transfers_data['transfers']}")
             break
         all_data.extend(transfers_data)
         offset += limit
