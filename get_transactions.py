@@ -133,8 +133,6 @@ field_names = ['timestamp', 'amount', 'currency_symbol', 'txhash', 'sender_addre
 
 # Write data to the CSV file
 data = fetch_data_with_pagination(config["url"], payload_select)
-print(f"It looks like your transactions are empty: {len(data)}")
-print(f"Aborting operation")
 
 if data:
     with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
@@ -154,3 +152,6 @@ if data:
             })
         
         print(f"CSV file '{csv_file_path}' has been created successfully.")
+else:
+    print(f"It looks like your transactions are empty: {len(data)}")
+    print(f"Aborting operation")
