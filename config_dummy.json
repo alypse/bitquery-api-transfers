@@ -13,8 +13,9 @@
   "currencies": [
     {
       "1": "ETH",
-      "3": "USDC",
-      "4": "USDT"
+      "2": "USDC",
+      "3": "USDT",
+      "4": "$ZKP"
     }
   ]
 }

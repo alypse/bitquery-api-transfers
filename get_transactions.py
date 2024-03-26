@@ -106,8 +106,7 @@ def fetch_data_with_pagination(url, payload_func):
             transfers_data = response_data.get('data', {}).get('ethereum', {}).get('transfers', [])
 
             if not transfers_data:
-                print("It looks like you don't have any more transactions.")
-                print(f"Transaction returned: {transfers_data[:1]}")
+                print("Fetching complete.")
                 break
 
             all_data.extend(transfers_data)
