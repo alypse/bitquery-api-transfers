@@ -1,2 +1,10 @@
+# Directories
+/build/
+/dist/
+
+# Files
+/get_transactions.spec
 /config.json
+
+# Extensions
 *.csv

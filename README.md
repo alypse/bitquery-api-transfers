@@ -2,8 +2,7 @@
 Written in python, fetches transaction data from [bitquery.io api](https://graphql.bitquery.io) with user-defined target
 address and network selection (ETH or Layer 2).
 
-
-The returned JSON is written out to a csv file.
+The returned JSON written out to a csv file with some formatting applied. Note that 
 
 ## Executable script
 We may use [PyInstaller](https://pyinstaller.org/en/stable/) to create an executable file which runs this script.

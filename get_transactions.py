@@ -122,9 +122,10 @@ def fetch_data_with_pagination(url, payload_func):
 
 
 # Define the path for the CSV file
-current_datetime = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+# Uncomment current_datetime for unique outputs per run of the script
+# current_datetime = datetime.now().strftime("%Y-%m-%d_%H%M%S")
 address_end = ethereum_address[-4:]
-csv_file_path = f"{address_end}_{currency_selection}_{current_datetime}.csv"
+csv_file_path = f"{address_end}_{currency_selection}.csv"
 
 # Define the field names for the CSV file
 field_names = ['timestamp', 'amount', 'currency_symbol', 'txhash', 'sender_address', 'receiver_address',
@@ -134,14 +135,14 @@ field_names = ['timestamp', 'amount', 'currency_symbol', 'txhash', 'sender_addre
 data = fetch_data_with_pagination(config["url"], payload_select)
 
 if data:
-    with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
+    with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:  # Write out the csv file (overwrite)
       
         writer = csv.DictWriter(csvfile, fieldnames=field_names)
         writer.writeheader()
 
         for transfer in data:
             writer.writerow({
-                'timestamp': transfer['block']['timestamp']['iso8601'][:10],  # Write the first ten characters of timestamp
+                'timestamp': transfer['block']['timestamp']['iso8601'][:10],  # Write the first ten chars of timestamp (day)
                 'amount': "{:.2f}".format(float(transfer['amount'])),  # Format amount rounded to two decimal places
                 'currency_symbol': transfer['currency']['symbol'],
                 'txhash': transfer['transaction']['hash'],
@@ -149,8 +150,21 @@ if data:
                 'receiver_address': transfer['receiver']['address'],
                 'contract_address': transfer['currency']['address'],
             })
-        
-        print(f"CSV file '{csv_file_path}' has been created successfully.")
+
+    # Open the csv file and create a list of the rows
+    with open(csv_file_path, 'r') as file:
+        reader = csv.reader(file)
+        rows = list(reader)
+
+    rows[0:] = sorted(rows[0:], key=lambda row: str(row[0]), reverse=True)
+
+    # Overwrite the csv file - Sorted by timestamp
+    with open(csv_file_path, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerows(rows)
+
+    print(f"CSV file '{csv_file_path}' has been created successfully.")
+
 else:
     print(f"It looks like your transactions are empty: {len(data)}")
     print(f"Aborting operation")
